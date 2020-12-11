@@ -11,7 +11,7 @@ public class Tools {
     private static final int RADIUS = 5000;
 
     // PLACES API KEY
-    public static final String AND_API_KEY = "&key=AIzaSyATX0EPkMJ2wFhYrwDMXAkf_VHk-ULBFfQ";
+    public static String AND_API_KEY = "&key=";
     public static final String PLACES_FIND_ER_initial = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?keyword=Escape%20Room&location=";
     public static final String GEOCODING_FIND_CITY = "https://maps.googleapis.com/maps/api/geocode/json?address=";
     public static final String PLACE_DETAILS_initial = "https://maps.googleapis.com/maps/api/place/details/json?place_id=";
