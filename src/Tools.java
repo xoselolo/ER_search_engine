@@ -6,8 +6,10 @@ import org.json.JSONObject;
 import java.io.*;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.util.HashMap;
 
 public class Tools {
+    private static HashMap<String, EscapeRoom> allER;
     private static final int RADIUS = 5000;
 
     // PLACES API KEY
@@ -15,7 +17,7 @@ public class Tools {
     public static final String PLACES_FIND_ER_initial = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?keyword=Escape%20Room&location=";
     public static final String GEOCODING_FIND_CITY = "https://maps.googleapis.com/maps/api/geocode/json?address=";
     public static final String PLACE_DETAILS_initial = "https://maps.googleapis.com/maps/api/place/details/json?place_id=";
-    public static final String PLACE_DETAILS_options = "&fields=name,vicinity,website,international_phone_number,rating";
+    public static final String PLACE_DETAILS_options = "&fields=name,vicinity,website,international_phone_number,rating,business_status,opening_hours";
 
     // Create URL methods
     public static String createUrlFindER(double latitude, double longitude, double radius){
@@ -107,6 +109,10 @@ public class Tools {
         Cell directionCell = firstRow.createCell(5);
         directionCell.setCellValue("ADDRESS");
         directionCell.setCellStyle(style);
+
+        Cell statusCell = firstRow.createCell(6);
+        statusCell.setCellValue("BUSINESS STATUS");
+        statusCell.setCellStyle(style);
     }
 
     public static void newEntryCityER(Sheet sheetCity, EscapeRoom er, int row) {
@@ -155,6 +161,12 @@ public class Tools {
             vicinityCell.setCellValue(er.getDirection());
         }
 
+        Cell statusCell = entry.createCell(6);
+        if (er.getBusiness_status() == null){
+            statusCell.setCellValue("---");
+        }else{
+            statusCell.setCellValue(er.getBusiness_status());
+        }
 
     }
 
@@ -172,8 +184,11 @@ public class Tools {
                 EscapeRoom er = Requester.requestERdetails(place_id);
                 Tools.newEntryCityER(sheetCity, er, total_rows);
                 total_rows++;
-                Tools.newEntryCityER(allSheet, er, allEntries);
-                allEntries++;
+                if (!Tools.existsER(er)){
+                    Tools.insertER(er);
+                    Tools.newEntryCityER(allSheet, er, allEntries);
+                    allEntries++;
+                }
             }
 
             String next_page_token;
@@ -196,8 +211,11 @@ public class Tools {
                         EscapeRoom er = Requester.requestERdetails(place_id);
                         Tools.newEntryCityER(sheetCity, er, total_rows);
                         total_rows++;
-                        Tools.newEntryCityER(allSheet, er, allEntries);
-                        allEntries++;
+                        if (!Tools.existsER(er)){
+                            Tools.insertER(er);
+                            Tools.newEntryCityER(allSheet, er, allEntries);
+                            allEntries++;
+                        }
                     }
 
                     try{
@@ -211,5 +229,17 @@ public class Tools {
             }
         }
         return allEntries;
+    }
+
+    public static void initAllER(){
+        allER = new HashMap<String, EscapeRoom>();
+    }
+
+    public static boolean existsER(EscapeRoom er){
+        return allER.get(er.getPlace_id()) != null;
+    }
+
+    public static void insertER(EscapeRoom er){
+        allER.put(er.getPlace_id(), er);
     }
 }

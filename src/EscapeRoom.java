@@ -6,15 +6,19 @@ public class EscapeRoom {
     private String website;
     private String international_phone_number; // o quizas el fromatted_phone_number
     private Float rating;
+    private String business_status;
+    private String schedule[];
 
     // Constructor
-    public EscapeRoom(String place_id, String name, String direction, String website, String international_phone_number, Float rating) {
+    public EscapeRoom(String place_id, String name, String direction, String website, String international_phone_number, Float rating, String business_status, String[] schedule) {
         this.place_id = place_id;
         this.name = name;
         this.direction = direction;
         this.website = website;
         this.international_phone_number = international_phone_number;
         this.rating = rating;
+        this.business_status = business_status;
+        this.schedule = schedule;
     }
 
     // Getters & Setters
@@ -66,6 +70,21 @@ public class EscapeRoom {
         this.rating = rating;
     }
 
+    public String getBusiness_status() {
+        return business_status;
+    }
+
+    public void setBusiness_status(String business_status) {
+        this.business_status = business_status;
+    }
+
+    public String[] getSchedule() {
+        return schedule;
+    }
+
+    public void setSchedule(String[] schedule) {
+        this.schedule = schedule;
+    }
 
     // toString
     @Override

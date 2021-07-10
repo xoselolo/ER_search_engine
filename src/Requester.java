@@ -37,8 +37,16 @@ public class Requester {
         Float rating;
         String vicinity;
         String website;
+        String business_status;
+        String schedule[] = new String[7];
+
         try{
-            phone = result.getString("international_phone_number");
+            business_status = result.getString("business_status");
+        }catch (Exception e){
+            business_status = null;
+        }
+        try{
+                phone = result.getString("international_phone_number");
         }catch (Exception e){
             phone = null;
         }
@@ -62,7 +70,23 @@ public class Requester {
         }catch (Exception e){
             website = null;
         }
+        try{
+            if (business_status.compareTo("OPERATIONAL") == 0){
+                try{
+                    JSONArray jsonSchedule = result.getJSONObject("opening_hours").getJSONArray("weekday_text");
+                    for (int i = 0; i < jsonSchedule.length(); i++){
+                        schedule[i] = jsonSchedule.getString(i);
+                    }
+                }catch (Exception e){
+                    schedule = null;
+                }
+            }else{
+                schedule = null;
+            }
+        }catch (Exception e){
+            schedule = null;
+        }
 
-        return new EscapeRoom(place_id, name, vicinity, website, phone, rating);
+        return new EscapeRoom(place_id, name, vicinity, website, phone, rating, business_status, schedule);
     }
 }
